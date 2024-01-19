@@ -26,15 +26,34 @@ function App() {
       permissionGranted = permission === "granted";
     }
     if (permissionGranted) {
-      sendNotification("Tauri is awesome!");
       sendNotification({ title: "TAURI", body: "Tauri is awesome!" });
     }
+  };
+
+  // https://stackoverflow.com/a/11486026
+  const prettyPrintTime = (duration: number) => {
+    // Hours, minutes and seconds
+    const hrs = ~~(duration / 3600);
+    const mins = ~~((duration % 3600) / 60);
+    const secs = ~~duration % 60;
+
+    let ret = "";
+
+    ret += hrs < 10 ? "0" + hrs : hrs;
+    ret += " : ";
+    ret += mins < 10 ? "0" + mins : mins;
+    ret += " : ";
+    ret += secs < 10 ? "0" + secs : secs;
+
+    return ret;
   };
 
   return (
     <div className="h-screen w-screen bg-slate-800 flex justify-center items-center">
       <div className="flex flex-col items-center space-y-3">
-        <h1 className="text-white font-semibold text-3xl">{timeElapsed}</h1>
+        <h1 className="text-white font-semibold text-5xl">
+          {prettyPrintTime(timeElapsed)}
+        </h1>
         <Button onClick={() => notify()}>Click me</Button>
       </div>
     </div>
