@@ -5,12 +5,15 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "./ui/drawer";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Button } from "./ui/button";
+import { AppContext } from "@/lib/context";
 
 function AppDrawerContent() {
-  const [workCount, setWorkCount] = useState(0);
-  const [breakCount, setBreakCount] = useState(0);
+  const { time, setTime } = useContext(AppContext);
+  const [workCount, setWorkCount] = useState(time.work);
+  const [breakCount, setBreakCount] = useState(time.break);
+
   return (
     <DrawerContent className="mb-4 bg-app-background border-slate-700">
       <DrawerHeader className="text-white flex flex-col items-center">
@@ -24,10 +27,22 @@ function AppDrawerContent() {
         <Counter count={breakCount} setCount={setBreakCount} subtitle="Break" />
       </div>
       <div className="flex flex-col w-full justify-center items-center space-y-2">
-        <Button className="w-64 bg-app-background border-2 border-white/75">
+        <Button
+          onClick={() => {
+            setWorkCount(0);
+            setBreakCount(0);
+          }}
+          className="w-64 bg-app-background border-2 border-white/75">
           Reset
         </Button>
-        <Button className="w-64 bg-slate-950">Save</Button>
+        <Button
+          /* TODO: show dialog box asking for confirmation
+                 as saving will stop any timers running
+        */
+          onClick={() => setTime({ work: workCount, break: breakCount })}
+          className="w-64 bg-slate-950">
+          Save
+        </Button>
       </div>
     </DrawerContent>
   );
@@ -47,9 +62,9 @@ function Counter({
       <div className="w-full flex justify-between items-center">
         <Button
           size="icon"
-          className="rounded-full"
+          className="rounded-full mt-2"
           variant={"ghost"}
-          onClick={() => setCount((state) => state + 10)}>
+          onClick={() => setCount((state) => state - 10)}>
           <MinusCircle strokeWidth={0.7} size={30} />
         </Button>
         <div
@@ -69,7 +84,7 @@ function Counter({
         </div>
         <Button
           size="icon"
-          className="rounded-full"
+          className="rounded-full mt-2"
           variant={"ghost"}
           onClick={() => setCount((state) => state + 10)}>
           <PlusCircle strokeWidth={0.7} size={30} />
