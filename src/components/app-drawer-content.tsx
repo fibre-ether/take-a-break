@@ -1,5 +1,6 @@
 import { MinusCircle, PlusCircle } from "lucide-react";
 import {
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -35,14 +36,16 @@ function AppDrawerContent() {
           className="w-64 bg-app-background border-2 border-white/75">
           Reset
         </Button>
-        <Button
-          /* TODO: show dialog box asking for confirmation
+        <DrawerClose asChild>
+          <Button
+            /* TODO: show dialog box asking for confirmation
                  as saving will stop any timers running
         */
-          onClick={() => setTime({ work: workCount, break: breakCount })}
-          className="w-64 bg-slate-950">
-          Save
-        </Button>
+            onClick={() => setTime({ work: workCount, break: breakCount })}
+            className="w-64 bg-slate-950">
+            Save & Close
+          </Button>
+        </DrawerClose>
       </div>
     </DrawerContent>
   );
