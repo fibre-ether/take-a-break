@@ -1,9 +1,11 @@
 import { Pause, Play, RotateCcw, Settings } from "lucide-react";
 import { Button } from "./ui/button";
-import { DrawerTrigger } from "./ui/drawer";
+import { Drawer, DrawerTrigger } from "./ui/drawer";
 import { useContext, useEffect, useState } from "react";
 import { prettyPrintTime } from "@/lib/utils";
 import { AppContext } from "@/lib/context";
+import { toast } from "sonner";
+import AppDrawerContent from "./app-drawer-content";
 
 enum TimerState {
   runningWork = "running-work",
@@ -17,6 +19,7 @@ enum TimerState {
 export function AppContent() {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [timerState, setTimerState] = useState(TimerState.finishedBreak);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { time } = useContext(AppContext);
 
   useEffect(() => {
@@ -59,15 +62,29 @@ export function AppContent() {
 
   function toggleTimerState() {
     console.log(timerState);
-    // console.log(
-    //   "timerstate==paused:",
-    //   timerState === TimerState.paused,
-    //   "| work time: ",
-    //   time.work * 60,
-    //   "| time elapsed:",
-    //   timeElapsed
-    // );
-    if (timerState === TimerState.runningBreak) {
+    if (time.work <= 0 || time.break <= 0) {
+      toast.custom(() => (
+        <div className="bg-black border-2 p-4 rounded-lg border-slate-500 flex items-center flex-1">
+          <div>
+            <h1 className="text-base text-white">Please setup timer</h1>
+            <p className="text-xs text-muted-foreground">
+              Work or Break timer is not set
+            </p>
+          </div>
+          <Button
+            variant={"stylized"}
+            className="ml-6 text-sm p-2"
+            onClick={() => {
+              {
+                setDrawerOpen(true);
+                toast.dismiss();
+              }
+            }}>
+            Show me
+          </Button>
+        </div>
+      ));
+    } else if (timerState === TimerState.runningBreak) {
       setTimerState(TimerState.pausedBreak);
     } else if (timerState === TimerState.runningWork) {
       setTimerState(TimerState.pausedWork);
@@ -98,8 +115,25 @@ export function AppContent() {
     }
   }
 
+  function resetTimer() {
+    setTimeElapsed(0);
+    if (timerState === TimerState.runningBreak) {
+      setTimerState(TimerState.pausedBreak);
+    } else if (timerState === TimerState.runningWork) {
+      setTimerState(TimerState.pausedWork);
+    }
+  }
+
+  function retrieveCurrentTime() {
+    const result =
+      retrieveToggleButtonText()?.split(" ")[1] === "Work"
+        ? time.work * 60 - timeElapsed
+        : time.break * 60 - timeElapsed;
+    return result;
+  }
+
   return (
-    <>
+    <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
       <DrawerTrigger asChild>
         <Button
           variant={"stylized"}
@@ -114,7 +148,7 @@ export function AppContent() {
           {retrieveToggleButtonText()?.split(" ")[1]}
         </h1>
         <h1 className="text-white font-semibold text-5xl min-w-64 text-center">
-          {prettyPrintTime(timeElapsed)}
+          {prettyPrintTime(retrieveCurrentTime())}
         </h1>
         <div className="flex space-x-4">
           <Button
@@ -132,12 +166,13 @@ export function AppContent() {
           <Button
             variant={"stylized"}
             size={"stylized"}
-            onClick={() => setTimeElapsed(0)}>
+            onClick={() => resetTimer()}>
             <RotateCcw strokeWidth={1.5} />
             <p>Reset</p>
           </Button>
         </div>
       </div>
-    </>
+      <AppDrawerContent drawerOpen={drawerOpen} />
+    </Drawer>
   );
 }

@@ -6,14 +6,26 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "./ui/drawer";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Button } from "./ui/button";
 import { AppContext } from "@/lib/context";
 
-function AppDrawerContent() {
+function AppDrawerContent({ drawerOpen }: { drawerOpen: boolean }) {
   const { time, setTime } = useContext(AppContext);
   const [workCount, setWorkCount] = useState(time.work);
   const [breakCount, setBreakCount] = useState(time.break);
+
+  useEffect(() => {
+    setWorkCount(time.work);
+    setBreakCount(time.break);
+    /* This dependency overwrites any unsaved values that were written when drawer was last closed */
+  }, [drawerOpen]);
 
   return (
     <DrawerContent className="mb-4 bg-app-background border-slate-700">
@@ -61,7 +73,7 @@ function Counter({
   subtitle: string;
 }) {
   return (
-    <div className="h-40 min-w-40 flex flex-col text-white items-center">
+    <div className="mt-10 mb-14 min-w-40 flex flex-col text-white items-center">
       <div className="w-full flex justify-between items-center">
         <Button
           size="icon"

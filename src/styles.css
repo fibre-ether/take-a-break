@@ -8,6 +8,16 @@ html {
   font-style: normal;
 }
 
+.font-jetbrains-mono {
+  font-family: "JetBrains Mono", monospace !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.sonner-custom-button button {
+  background: black !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
