@@ -3,34 +3,11 @@
 
 use tauri::{
     CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem,
-    Window,
 };
-
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-#[tauri::command]
-async fn close_splashscreen(window: Window) {
-    // Close splashscreen
-    window
-        .get_window("splashscreen")
-        .expect("no window labeled 'splashscreen' found")
-        .close()
-        .unwrap();
-    // Show main window
-    window
-        .get_window("main")
-        .expect("no window labeled 'main' found")
-        .show()
-        .unwrap();
-}
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let hide = CustomMenuItem::new("toggle_show".to_string(), "Hide");
+    let hide = CustomMenuItem::new("toggle_show".to_string(), "Minimize to tray");
     let tray_menu = SystemTrayMenu::new()
         .add_item(hide)
         .add_native_item(SystemTrayMenuItem::Separator)
@@ -74,7 +51,7 @@ fn main() {
                     .unwrap();
             }
         })
-        .invoke_handler(tauri::generate_handler![greet, close_splashscreen])
+        // .invoke_handler(tauri::generate_handler![])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

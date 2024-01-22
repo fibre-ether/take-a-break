@@ -2,7 +2,7 @@ import { Pause, Play, RotateCcw, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { Drawer, DrawerTrigger } from "./ui/drawer";
 import { useContext, useEffect, useState } from "react";
-import { prettyPrintTime } from "@/lib/utils";
+import { notify, prettyPrintTime } from "@/lib/utils";
 import { AppContext } from "@/lib/context";
 import { toast } from "sonner";
 import AppDrawerContent from "./app-drawer-content";
@@ -44,11 +44,13 @@ export function AppContent() {
         time.work * 60 <= timeElapsed
       ) {
         setTimerState(TimerState.finishedWork);
+        notify("Work time is up", "Start break timer");
       } else if (
         timerState === TimerState.runningBreak &&
         time.break * 60 <= timeElapsed
       ) {
         setTimerState(TimerState.finishedBreak);
+        notify("Break time is up", "Start work timer");
       } else if (
         timerState === TimerState.runningBreak ||
         timerState === TimerState.runningWork

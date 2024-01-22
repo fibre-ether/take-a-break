@@ -1,4 +1,10 @@
-import { MinusCircle, PlusCircle } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  MinusCircle,
+  Mouse,
+  PlusCircle,
+} from "lucide-react";
 import {
   DrawerClose,
   DrawerContent,
@@ -83,7 +89,7 @@ function Counter({
           <MinusCircle strokeWidth={0.7} size={30} />
         </Button>
         <div
-          className="flex font-semibold mx-2 justify-center items-center text-7xl"
+          className="relative flex font-semibold mx-2 justify-center items-center text-7xl group"
           onWheel={(e) =>
             setCount((state) =>
               Math.min(
@@ -96,6 +102,7 @@ function Counter({
             )
           }>
           {count}
+          <MouseScroll />
         </div>
         <Button
           size="icon"
@@ -106,6 +113,16 @@ function Counter({
         </Button>
       </div>
       <p className="font-extralight text-md">{subtitle}</p>
+    </div>
+  );
+}
+
+function MouseScroll() {
+  return (
+    <div className="-space-y-1 flex flex-col absolute -top-0 -translate-y-full group-hover:opacity-75 opacity-0 transition-opacity duration-200">
+      <ChevronUp size={20} />
+      <Mouse size={20} />
+      <ChevronDown size={20} />
     </div>
   );
 }

@@ -1,28 +1,30 @@
-import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/api/notification";
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from "@tauri-apps/api/notification";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const notify = async () => {
-  console.log("reached notify func");
+export const notify = async (title: string, body: string) => {
   let permissionGranted = await isPermissionGranted();
-  console.log("1st permissions status:", permissionGranted);
   if (!permissionGranted) {
     const permission = await requestPermission();
     permissionGranted = permission === "granted";
   }
   if (permissionGranted) {
-    sendNotification({ title: "TAURI", body: "Tauri is awesome!" });
+    sendNotification({ title, body });
   }
 };
 
 export enum timeUnit {
   second,
   minute,
-  hour
+  hour,
 }
 
 // https://stackoverflow.com/a/11486026
