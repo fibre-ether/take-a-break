@@ -53,7 +53,7 @@ export function AppContent() {
       ) {
         setTimeElapsed(0);
       }
-    }, 10);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [timerState, timeElapsed]);

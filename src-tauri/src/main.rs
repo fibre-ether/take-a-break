@@ -7,7 +7,7 @@ use tauri::{
 
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let hide = CustomMenuItem::new("toggle_show".to_string(), "Minimize to tray");
+    let hide = CustomMenuItem::new("toggle_show".to_string(), "Show/Hide");
     let tray_menu = SystemTrayMenu::new()
         .add_item(hide)
         .add_native_item(SystemTrayMenuItem::Separator)
@@ -17,26 +17,26 @@ fn main() {
 
     tauri::Builder::default()
         .system_tray(tray_menu)
-        .on_system_tray_event(|app, event| {
-            if let SystemTrayEvent::MenuItemClick { id, .. } = event {
-                let item_handle = app.tray_handle().get_item(&id);
-                match id.as_str() {
-                    "toggle_show" => {
-                        let window = app.get_window("main").unwrap();
-                        if window.is_visible().unwrap() {
-                            window.hide().unwrap();
-                            item_handle.set_title("Show").unwrap();
-                        } else {
-                            window.show().unwrap();
-                            item_handle.set_title("Hide").unwrap();
-                        }
+        .on_system_tray_event(|app, event| match event {
+            SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                "toggle_show" => {
+                    let window = app.get_window("main").unwrap();
+                    if window.is_visible().unwrap() {
+                        window.hide().unwrap();
+                    } else {
+                        window.show().unwrap();
                     }
-                    "quit" => {
-                        std::process::exit(0);
-                    }
-                    _ => {}
                 }
+                "quit" => {
+                    std::process::exit(0);
+                }
+                _ => {}
+            },
+            SystemTrayEvent::LeftClick { .. } => {
+                let window = app.get_window("main").unwrap();
+                window.show().unwrap();
             }
+            _ => (),
         })
         .on_window_event(|event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event.event() {
