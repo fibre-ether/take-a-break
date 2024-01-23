@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "take-a-break",
-    "version": "0.0.0"
+    "productName": "Take A Break",
+    "version": "0.0.1"
   },
   "tauri": {
     "systemTray": {
@@ -43,7 +43,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "take-a-break",
+        "title": "Take a Break",
         "width": 800,
         "height": 600
       }

@@ -6,6 +6,7 @@ import { notify, prettyPrintTime } from "@/lib/utils";
 import { AppContext } from "@/lib/context";
 import { toast } from "sonner";
 import AppDrawerContent from "./app-drawer-content";
+import { setTimeout, clearTimeout } from "worker-timers";
 
 enum TimerState {
   runningWork = "running-work",
@@ -28,17 +29,7 @@ export function AppContent() {
   }, [time]);
 
   useEffect(() => {
-    if (
-      timerState === TimerState.finishedBreak ||
-      timerState === TimerState.finishedWork
-    ) {
-      setTimeElapsed(0);
-    }
-  }, [timerState]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // console.log(time.work * 60, timeElapsed);
+    const timer = setTimeout(() => {
       if (
         timerState === TimerState.runningWork &&
         time.work * 60 <= timeElapsed
@@ -56,10 +47,15 @@ export function AppContent() {
         timerState === TimerState.runningWork
       ) {
         setTimeElapsed((state) => state + 1);
+      } else if (
+        timerState === TimerState.finishedBreak ||
+        timerState === TimerState.finishedWork
+      ) {
+        setTimeElapsed(0);
       }
     }, 10);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, [timerState, timeElapsed]);
 
   function toggleTimerState() {

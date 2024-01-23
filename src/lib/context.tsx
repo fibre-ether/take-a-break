@@ -9,7 +9,7 @@ type AppContextProviderState = {
   setTime: (time: AppContextTime) => void;
 };
 const initialState: AppContextProviderState = {
-  time: { work: 0, break: 0 },
+  time: { work: 25, break: 5 },
   setTime: () => null,
 };
 
